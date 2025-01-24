@@ -2,8 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { inArray, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { events } from "../drizzle/schema";
-import * as schema from "../drizzle/schema";
+import { events } from "../drizzle/drizzle-schema";
+import * as schema from "../drizzle/drizzle-schema";
 
 import { EventTypesService } from "./event-types.service";
 import { LocationsService } from "./locations.service";
@@ -28,6 +28,7 @@ export class EventsService {
             with: {
                 module: {
                     columns: {
+                        number: true,
                         name: true,
                     },
                 },
@@ -60,8 +61,8 @@ export class EventsService {
 
     async insert(
         module: { id?: string; name?: string },
-        startDates: string[],
-        endDate: string | null | undefined,
+        startDatesStr: string[],
+        endDateStr: string | null | undefined,
         location: { id?: string; data?: { name: string; isOffline: boolean; address?: string } },
         name: string,
         eventType: { id?: string; name?: string },
@@ -69,10 +70,9 @@ export class EventsService {
         participantsCount: number,
         links: string[],
     ) {
-        const moduleId =
-            module.id ??
-            (await this.modulesService.insert(module.name!))?.id ??
-            (await this.modulesService.getIdByName(module.name!));
+        const moduleId = module.id ?? (await this.modulesService.getIdByName(module.name!));
+        const responsiblePersonId =
+            responsiblePerson.id ?? (await this.responsiblePersonsService.getIdByName(responsiblePerson.name!));
         const locationId =
             location.id ??
             (await this.locationsService.insert(location.data!.name, location.data!.isOffline, location.data!.address))
@@ -82,30 +82,34 @@ export class EventsService {
             eventType.id ??
             (await this.eventTypesService.insert(eventType.name!))?.id ??
             (await this.eventTypesService.getIdByName(eventType.name!));
-        const responsiblePersonId =
-            responsiblePerson.id ??
-            (await this.responsiblePersonsService.insert(responsiblePerson.name!))?.id ??
-            (await this.responsiblePersonsService.getIdByName(responsiblePerson.name!));
-        startDates = startDates.sort();
-        return (
-            await this.db
-                .insert(events)
-                .values({
-                    moduleId,
-                    startDates,
-                    endDate,
-                    locationId,
-                    name,
-                    eventTypeId,
-                    responsiblePersonId,
-                    participantsCount,
-                    links,
-                })
-                .returning()
-        )[0];
+        if (!moduleId || !locationId || !eventTypeId || !responsiblePersonId) {
+            return;
+        }
+        startDatesStr = startDatesStr
+            .map((dateStr) => new Date(dateStr))
+            .sort()
+            .map(String);
+        const queryResult = await this.db
+            .insert(events)
+            .values({
+                moduleId,
+                startDates: startDatesStr,
+                endDate: endDateStr,
+                locationId,
+                name,
+                eventTypeId,
+                responsiblePersonId,
+                participantsCount,
+                links,
+            })
+            .returning();
+        if (queryResult.length > 0) {
+            return queryResult[0];
+        }
     }
 
     async deleteMany(ids: string[]) {
-        await this.db.delete(events).where(inArray(events.id, ids));
+        const queryResult = await this.db.delete(events).where(inArray(events.id, ids));
+        return { deletedRowCount: queryResult.rowCount ?? 0 };
     }
 }

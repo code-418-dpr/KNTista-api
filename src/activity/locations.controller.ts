@@ -8,8 +8,8 @@ import {
 } from "@nestjs/swagger";
 
 import { BaseController } from "./base.controller";
-import { IdDto } from "./dto/base.dto";
-import { CreateOrUpdateLocationsDto, SearchLocationsDto } from "./dto/locations.dto";
+import { IdParamDto } from "./dto/base.dto";
+import { LocationsCreateOrUpdateBodyDto, LocationsSearchQueryDto } from "./dto/locations.dto";
 import { LocationsService } from "./locations.service";
 
 @Controller("locations")
@@ -29,12 +29,12 @@ export class LocationsController extends BaseController<LocationsService> {
     @ApiOkResponse({ example: [LocationsController.ENTITY_EXAMPLE] })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Get()
-    async searchOrFindAll(@Query() query: SearchLocationsDto) {
-        if (query.name && query.isOffline) {
+    async searchOrFindAll(@Query() { name, isOffline, address }: LocationsSearchQueryDto) {
+        if (name || isOffline) {
             return this.service.search(
-                query.name,
-                query.isOffline ? query.isOffline === "true" : undefined,
-                query.address,
+                name,
+                isOffline === "true" ? true : isOffline === "false" ? false : undefined,
+                address,
             );
         }
         return this.service.findAll();
@@ -44,8 +44,8 @@ export class LocationsController extends BaseController<LocationsService> {
     @ApiCreatedResponse({ example: LocationsController.ENTITY_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Post("new")
-    async insert(@Body() body: CreateOrUpdateLocationsDto) {
-        return this.service.insert(body.name, body.isOffline, body.address);
+    async insert(@Body() { name, isOffline, address }: LocationsCreateOrUpdateBodyDto) {
+        return this.service.insert(name, isOffline, address);
     }
 
     @ApiOperation({ summary: "Update the item" })
@@ -53,7 +53,7 @@ export class LocationsController extends BaseController<LocationsService> {
     @ApiBadRequestResponse({ example: BaseController.VALIDATION_ERROR_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Put(":id")
-    async updateOne(@Param() { id }: IdDto, @Body() body: CreateOrUpdateLocationsDto) {
+    async updateOne(@Param() { id }: IdParamDto, @Body() body: LocationsCreateOrUpdateBodyDto) {
         return this.service.updateOne(id, body.name, body.isOffline, body.address);
     }
 }

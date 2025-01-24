@@ -16,8 +16,8 @@ import {
 } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { eventTypes, events, locations, modules, responsiblePersons } from "../drizzle/schema";
-import * as schema from "../drizzle/schema";
+import { eventTypes, events, locations, modules, responsiblePersons } from "../drizzle/drizzle-schema";
+import * as schema from "../drizzle/drizzle-schema";
 
 export abstract class BaseService<
     T extends typeof eventTypes | typeof modules | typeof responsiblePersons | typeof locations,
@@ -34,6 +34,17 @@ export abstract class BaseService<
         protected readonly table: T,
         protected readonly eventForeignKey: Column<ColumnBaseConfig<ColumnDataType, string>, object, object>,
     ) {}
+
+    async getIdByName(name: string) {
+        const queryResults = await this.db
+            .select({ id: this.table.id })
+            .from(this.table)
+            .where(eq(this.table.name, name))
+            .limit(1);
+        if (queryResults.length > 0) {
+            return queryResults[0].id;
+        }
+    }
 
     async findAll(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,12 +63,6 @@ export abstract class BaseService<
             .orderBy(desc(count(events.id)), asc(this.table.name));
     }
 
-    async getIdByName(name: string) {
-        return (
-            await this.db.select({ id: this.table.id }).from(this.table).where(eq(this.table.name, name)).limit(1)
-        )[0]?.id;
-    }
-
     async search(name: string) {
         return this.db
             .select({ id: this.table.id, name: this.table.name })
@@ -67,22 +72,24 @@ export abstract class BaseService<
     }
 
     async deleteOne(id: string) {
-        const isUsedInEvent = await this.db.query.events.findFirst({
+        const isUsedInEvent = !!(await this.db.query.events.findFirst({
             columns: { id: true },
             where: eq(this.eventForeignKey, id),
-        });
+        }));
         if (isUsedInEvent) {
             await this.db
                 .update(this.table as typeof eventTypes | typeof modules | typeof responsiblePersons | typeof locations)
                 .set({ isDeleted: true })
                 .where(eq(this.table.id, id));
+            return { deleted: false, restored: true };
         } else {
-            await this.db.delete(this.table).where(eq(this.table.id, id));
+            const queryResult = await this.db.delete(this.table).where(eq(this.table.id, id));
+            return { deleted: !!queryResult.rowCount, restored: false };
         }
     }
 
     async deleteUnused() {
-        await this.db
+        const queryResult = await this.db
             .delete(this.table)
             .where(
                 and(
@@ -90,5 +97,6 @@ export abstract class BaseService<
                     not(exists(this.db.select().from(events).where(eq(this.eventForeignKey, this.table.id)))),
                 ),
             );
+        return { deletedRowCount: queryResult.rowCount ?? 0 };
     }
 }

@@ -2,7 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
     ArrayMinSize,
     IsArray,
-    IsBoolean,
     IsDateString,
     IsNotEmpty,
     IsNumber,
@@ -14,60 +13,22 @@ import {
     ValidateIf,
 } from "class-validator";
 
-export class SearchEventsDto {
+import { IdOrNameDto } from "./base.dto";
+import { LocationsSearchOrCreateFromEventDto } from "./locations.dto";
+
+export class EventsSearchQueryDto {
     @ApiProperty({ required: false, type: "string", format: "date" })
     @IsDateString()
     @IsOptional()
-    startDate?: string;
+    startDateStr?: string;
 
     @ApiProperty({ required: false, type: "string", format: "date" })
     @IsDateString()
     @IsOptional()
-    endDate?: string;
+    endDateStr?: string;
 }
 
-class IdOrNameDto {
-    @ApiProperty({ required: false })
-    @IsUUID()
-    @IsOptional()
-    id?: string;
-
-    @ApiProperty({ required: false })
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
-    name?: string;
-}
-
-class CreateLocationFromEventDataDto {
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-
-    @ApiProperty()
-    @IsBoolean()
-    isOffline: boolean;
-
-    @ApiProperty({ required: false })
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
-    address?: string;
-}
-
-class SearchOrCreateLocationFromEventDto {
-    @ApiProperty({ required: false })
-    @IsUUID()
-    @IsOptional()
-    id?: string;
-
-    @ApiProperty({ required: false })
-    @IsOptional()
-    data?: CreateLocationFromEventDataDto;
-}
-
-export class CreateEventsDto {
+export class EventsCreateBodyDto {
     @ApiProperty()
     module: IdOrNameDto;
 
@@ -75,16 +36,15 @@ export class CreateEventsDto {
     @IsArray()
     @ArrayMinSize(1)
     @IsDateString(undefined, { each: true })
-    startDates: string[];
+    startDatesStr: string[];
 
     @ApiProperty({ required: false })
-    @ValidateIf((o) => o.endDate && o.startDates.filter((date: string) => new Date(o.endDate) > new Date(date)))
     @IsDateString()
     @IsOptional()
-    endDate?: string;
+    endDateStr?: string;
 
     @ApiProperty()
-    location: SearchOrCreateLocationFromEventDto;
+    location: LocationsSearchOrCreateFromEventDto;
 
     @ApiProperty()
     @IsString()
@@ -109,7 +69,7 @@ export class CreateEventsDto {
     links: string[];
 }
 
-export class DeleteEventsDto {
+export class EventsDeleteBodyDto {
     @ApiProperty()
     @IsArray()
     @IsNotEmpty()

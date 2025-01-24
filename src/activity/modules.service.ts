@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { asc, eq, max, notInArray } from "drizzle-orm";
+import { and, asc, eq, ilike, max, notInArray } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import * as schema from "../drizzle/schema";
-import { events, modules } from "../drizzle/schema";
+import * as schema from "../drizzle/drizzle-schema";
+import { events, modules } from "../drizzle/drizzle-schema";
 
 import { BaseReferencesService } from "./base-references.service";
 
@@ -16,46 +16,54 @@ export class ModulesService extends BaseReferencesService {
     async findAll() {
         return this.db
             .select({
-                id: modules.id,
-                name: modules.name,
+                id: this.table.id,
+                name: this.table.name,
                 currentMonthEventCount: ModulesService.CURRENT_MONTH_EVENT_COUNT_SQL_EXPR,
             })
-            .from(modules)
-            .leftJoin(events, eq(events.moduleId, modules.id))
-            .where(eq(modules.isDeleted, false))
-            .groupBy(modules.id)
+            .from(this.table)
+            .leftJoin(events, eq(events.moduleId, this.table.id))
+            .where(eq(this.table.isDeleted, false))
+            .groupBy(this.table.id)
+            .orderBy(asc(modules.number));
+    }
+
+    async search(name: string) {
+        return this.db
+            .select({ id: this.table.id, name: this.table.name })
+            .from(this.table)
+            .where(and(ilike(this.table.name, `%${name}%`), eq(this.table.isDeleted, false)))
             .orderBy(asc(modules.number));
     }
 
     async getMaxNumber() {
-        return (
-            await this.db
-                .select({
-                    max: max(modules.number),
-                })
-                .from(modules)
-                .where(eq(modules.isDeleted, false))
-        )[0].max!;
+        const queryResults = await this.db
+            .select({
+                max: max(modules.number),
+            })
+            .from(this.table)
+            .where(eq(this.table.isDeleted, false));
+        return queryResults[0].max ?? 0;
     }
 
     async insert(name: string) {
-        return (
-            await this.db
-                .insert(modules)
-                .values({ number: (await this.getMaxNumber()) + 1, name })
-                .onConflictDoUpdate({
-                    target: this.table.name,
-                    set: { isDeleted: false },
-                    setWhere: eq(this.table.isDeleted, true),
-                })
-                .returning()
-        )[0];
+        const queryResults = await this.db
+            .insert(modules)
+            .values({ number: (await this.getMaxNumber()) + 1, name })
+            .onConflictDoUpdate({
+                target: this.table.name,
+                set: { isDeleted: false },
+                setWhere: eq(this.table.isDeleted, true),
+            })
+            .returning();
+        if (queryResults.length > 0) {
+            return queryResults[0];
+        }
     }
 
     async updateNumbers(ids: string[]) {
         const notPassedIds = await this.db.query.modules.findMany({
             columns: { id: true },
-            where: notInArray(modules.id, ids),
+            where: notInArray(this.table.id, ids),
             orderBy: asc(modules.number),
         });
         ids.push(...notPassedIds.map((item) => item.id));
@@ -63,11 +71,12 @@ export class ModulesService extends BaseReferencesService {
         return await this.db.transaction(async (tx) => {
             const updatedResults = [];
             for (let i = 0; i < ids.length; ) {
-                const id = ids[i];
-                const result = (
-                    await tx.update(schema.modules).set({ number: ++i }).where(eq(schema.modules.id, id)).returning()
-                )[0];
-                updatedResults.push(result);
+                const queryResults = await tx
+                    .update(modules)
+                    .set({ number: ++i })
+                    .where(eq(this.table.id, ids[i]))
+                    .returning();
+                updatedResults.push(queryResults[0]);
             }
             return updatedResults;
         });

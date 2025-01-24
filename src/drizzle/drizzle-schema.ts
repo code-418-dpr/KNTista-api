@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { boolean, date, integer, pgEnum, pgTable, smallint, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
-import { bytea } from "./bytea";
+import { bytea } from "./types/bytea";
 
 export const UserRoles = pgEnum("UserRoles", ["USER", "ADMIN"]);
 

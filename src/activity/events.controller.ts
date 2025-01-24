@@ -8,7 +8,7 @@ import {
 } from "@nestjs/swagger";
 
 import { BaseController } from "./base.controller";
-import { CreateEventsDto, DeleteEventsDto, SearchEventsDto } from "./dto/events.dto";
+import { EventsCreateBodyDto, EventsDeleteBodyDto, EventsSearchQueryDto } from "./dto/events.dto";
 import { EventsService } from "./events.service";
 
 @Controller("events")
@@ -32,13 +32,13 @@ export class EventsController {
     @ApiOkResponse({ example: [EventsController.ENTITY_EXAMPLE] })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Get()
-    async findAll(@Query() query: SearchEventsDto) {
+    async findAll(@Query() { startDateStr, endDateStr }: EventsSearchQueryDto) {
         let startDate: Date | undefined, endDate: Date | undefined;
-        if (query.startDate) {
-            startDate = new Date(query.startDate);
+        if (startDateStr) {
+            startDate = new Date(startDateStr);
         }
-        if (query.endDate) {
-            endDate = new Date(query.endDate);
+        if (endDateStr) {
+            endDate = new Date(endDateStr);
         }
         return this.service.findAll(startDate, endDate);
     }
@@ -47,11 +47,11 @@ export class EventsController {
     @ApiCreatedResponse({ example: EventsController.ENTITY_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Post("new")
-    async insert(@Body() body: CreateEventsDto) {
+    async insert(@Body() body: EventsCreateBodyDto) {
         return this.service.insert(
             body.module,
-            body.startDates,
-            body.endDate,
+            body.startDatesStr,
+            body.endDateStr,
             body.location,
             body.name,
             body.eventType,
@@ -66,7 +66,7 @@ export class EventsController {
     @ApiBadRequestResponse({ example: BaseController.VALIDATION_ERROR_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Delete()
-    async deleteMany(@Body() { ids }: DeleteEventsDto) {
+    async deleteMany(@Body() { ids }: EventsDeleteBodyDto) {
         return this.service.deleteMany(ids);
     }
 }

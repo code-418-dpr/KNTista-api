@@ -11,7 +11,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
         .setTitle("KNTista-api")
         .setDescription("Backend for the KNTista project")
-        .setVersion("0.0.1")
+        .setVersion("0.0.2")
         .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup("docs", app, documentFactory);

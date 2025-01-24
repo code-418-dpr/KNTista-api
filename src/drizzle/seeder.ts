@@ -1,8 +1,8 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import "dotenv/config";
 
-import { eventTypes, locations, modules, responsiblePersons } from "./schema";
-import { eventTypesData, locationsData, modulesData, responsiblePersonsData } from "./seederData";
+import { eventTypes, locations, modules, responsiblePersons } from "./drizzle-schema";
+import { eventTypesData, locationsData, modulesData, responsiblePersonsData } from "./seeder-data";
 
 const db = drizzle(
     `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:5432/${process.env.POSTGRES_DB}`,

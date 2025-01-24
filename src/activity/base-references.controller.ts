@@ -9,7 +9,7 @@ import {
 
 import { BaseReferencesService } from "./base-references.service";
 import { BaseController } from "./base.controller";
-import { IdDto, NameDto } from "./dto/base.dto";
+import { IdParamDto, NameBodyDto } from "./dto/base.dto";
 
 export abstract class BaseReferencesController<T extends BaseReferencesService> extends BaseController<T> {
     protected constructor(service: T) {
@@ -20,7 +20,7 @@ export abstract class BaseReferencesController<T extends BaseReferencesService> 
     @ApiCreatedResponse({ example: BaseReferencesController.ENTITY_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseReferencesController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Post("new")
-    async insert(@Body() { name }: NameDto) {
+    async insert(@Body() { name }: NameBodyDto) {
         return this.service.insert(name);
     }
 
@@ -29,7 +29,7 @@ export abstract class BaseReferencesController<T extends BaseReferencesService> 
     @ApiBadRequestResponse({ example: BaseReferencesController.VALIDATION_ERROR_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseReferencesController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Put(":id")
-    async updateOne(@Param() { id }: IdDto, @Body() { name }: NameDto) {
+    async updateOne(@Param() { id }: IdParamDto, @Body() { name }: NameBodyDto) {
         return this.service.updateOne(id, name);
     }
 }

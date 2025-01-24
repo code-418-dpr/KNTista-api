@@ -3,7 +3,7 @@ import { DrizzlePGModule } from "@knaadh/nestjs-drizzle-pg";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import * as schema from "../drizzle/schema";
+import * as schema from "./drizzle-schema";
 
 @Module({
     imports: [

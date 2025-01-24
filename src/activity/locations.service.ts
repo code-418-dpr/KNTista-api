@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { and, asc, eq, ilike } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import * as schema from "../drizzle/schema";
-import { events, locations } from "../drizzle/schema";
+import * as schema from "../drizzle/drizzle-schema";
+import { events, locations } from "../drizzle/drizzle-schema";
 
 import { BaseService } from "./base.service";
 
@@ -44,17 +44,18 @@ export class LocationsService extends BaseService<typeof locations> {
     }
 
     async insert(name: string, isOffline: boolean, address?: string) {
-        return (
-            await this.db
-                .insert(this.table)
-                .values({ name, address, isOffline })
-                .onConflictDoUpdate({
-                    target: locations.name,
-                    set: { isDeleted: false },
-                    setWhere: eq(locations.isDeleted, true),
-                })
-                .returning()
-        )[0];
+        const queryResults = await this.db
+            .insert(this.table)
+            .values({ name, address, isOffline })
+            .onConflictDoUpdate({
+                target: locations.name,
+                set: { isDeleted: false },
+                setWhere: eq(locations.isDeleted, true),
+            })
+            .returning();
+        if (queryResults.length > 0) {
+            return queryResults[0];
+        }
     }
 
     async updateOne(id: string, name?: string, isOffline?: boolean, address?: string) {
@@ -63,6 +64,13 @@ export class LocationsService extends BaseService<typeof locations> {
             ...(address !== undefined && { address }),
             ...(isOffline !== undefined && { isOffline }),
         };
-        return (await this.db.update(this.table).set(updateValues).where(eq(this.table.id, id)).returning())[0];
+        const queryResults = await this.db
+            .update(this.table)
+            .set(updateValues)
+            .where(eq(this.table.id, id))
+            .returning();
+        if (queryResults.length > 0) {
+            return queryResults[0];
+        }
     }
 }

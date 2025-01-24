@@ -1,10 +1,10 @@
 import { Delete, Get, Param, Query } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 
-import { eventTypes, locations, modules, responsiblePersons } from "../drizzle/schema";
+import { eventTypes, locations, modules, responsiblePersons } from "../drizzle/drizzle-schema";
 
 import { BaseService } from "./base.service";
-import { IdDto, SearchByNameDto } from "./dto/base.dto";
+import { IdParamDto, NameQueryDto } from "./dto/base.dto";
 
 export abstract class BaseController<
     T extends BaseService<typeof eventTypes | typeof modules | typeof responsiblePersons | typeof locations>,
@@ -31,9 +31,9 @@ export abstract class BaseController<
     @ApiOkResponse({ example: [BaseController.ENTITY_EXAMPLE] })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Get()
-    async searchOrFindAll(@Query() query: SearchByNameDto) {
-        if (query.name) {
-            return this.service.search(query.name);
+    async searchOrFindAll(@Query() { name }: NameQueryDto) {
+        if (name !== undefined) {
+            return this.service.search(name);
         }
         return this.service.findAll();
     }
@@ -43,7 +43,7 @@ export abstract class BaseController<
     @ApiBadRequestResponse({ example: BaseController.VALIDATION_ERROR_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Delete(":id")
-    async deleteOne(@Param() { id }: IdDto) {
+    async deleteOne(@Param() { id }: IdParamDto) {
         return this.service.deleteOne(id);
     }
 
