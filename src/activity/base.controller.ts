@@ -22,7 +22,7 @@ export abstract class BaseController<
 
     protected static ENTITY_EXAMPLE = {
         id: "cfc3fab7-1d56-42d4-a489-8a553d81d66d",
-        name: "Some name here",
+        name: "Наименование",
     };
 
     protected constructor(protected service: T) {}

@@ -1,10 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsBooleanString, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 
-import { NameQueryDto } from "./base.dto";
-
 export class LocationsCreateOrUpdateBodyDto {
-    @ApiProperty()
+    @ApiProperty({ example: "1 корпус ДонНТУ" })
     @IsString()
     @IsNotEmpty()
     name: string;
@@ -13,7 +11,7 @@ export class LocationsCreateOrUpdateBodyDto {
     @IsBoolean()
     isOffline: boolean;
 
-    @ApiProperty({ required: false })
+    @ApiProperty({ required: false, example: "г. Донецк, ул. Артёма, 58" })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
@@ -21,7 +19,7 @@ export class LocationsCreateOrUpdateBodyDto {
 }
 
 class LocationsCreateFromEventDto {
-    @ApiProperty()
+    @ApiProperty({ example: "1 корпус ДонНТУ" })
     @IsString()
     @IsNotEmpty()
     name: string;
@@ -30,7 +28,7 @@ class LocationsCreateFromEventDto {
     @IsBoolean()
     isOffline: boolean;
 
-    @ApiProperty({ required: false })
+    @ApiProperty({ required: false, example: "г. Донецк, ул. Артёма, 58" })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
@@ -38,7 +36,7 @@ class LocationsCreateFromEventDto {
 }
 
 export class LocationsSearchOrCreateFromEventDto {
-    @ApiProperty({ required: false })
+    @ApiProperty({ required: false, example: "f5050daa-2e61-4f4f-adda-28cea31608ce" })
     @IsUUID()
     @IsOptional()
     id?: string;
@@ -48,13 +46,18 @@ export class LocationsSearchOrCreateFromEventDto {
     data?: LocationsCreateFromEventDto;
 }
 
-export class LocationsSearchQueryDto extends NameQueryDto {
+export class LocationsSearchQueryDto {
+    @ApiProperty({ required: false, example: "1 корпус ДонНТУ" })
+    @IsString()
+    @IsOptional()
+    name?: string;
+
     @ApiProperty({ required: false, type: "boolean" })
     @IsBooleanString()
     @IsOptional()
     isOffline?: string;
 
-    @ApiProperty({ required: false, type: "string" })
+    @ApiProperty({ required: false, type: "string", example: "г. Донецк, ул. Артёма, 58" })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
