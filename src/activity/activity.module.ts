@@ -10,6 +10,8 @@ import { LocationsController } from "./locations.controller";
 import { LocationsService } from "./locations.service";
 import { ModulesController } from "./modules.controller";
 import { ModulesService } from "./modules.service";
+import { ReportsController } from "./reports.controller";
+import { ReportsService } from "./reports.service";
 import { ResponsiblePersonsController } from "./responsible-persons.controller";
 import { ResponsiblePersonsService } from "./responsible-persons.service";
 
@@ -21,7 +23,15 @@ import { ResponsiblePersonsService } from "./responsible-persons.service";
         EventTypesController,
         LocationsController,
         EventsController,
+        ReportsController,
     ],
-    providers: [ModulesService, ResponsiblePersonsService, EventTypesService, LocationsService, EventsService],
+    providers: [
+        ModulesService,
+        ResponsiblePersonsService,
+        EventTypesService,
+        LocationsService,
+        EventsService,
+        ReportsService,
+    ],
 })
 export class ActivityModule {}
