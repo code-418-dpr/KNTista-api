@@ -24,10 +24,10 @@
 **/build
 **/dist
 LICENSE
-README.md
+**/*.md
 
 test
 **/*.spec.ts
-.eslintrc.js
-.prettierrc
+eslint.config.js
+prettier.config.js
 jest.config.json
