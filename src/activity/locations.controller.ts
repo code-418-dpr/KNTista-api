@@ -21,10 +21,6 @@ export class LocationsController extends BaseController<LocationsService> {
         address: "Some address here",
     };
 
-    constructor(service: LocationsService) {
-        super(service);
-    }
-
     @ApiOperation({ summary: "Search or get all active items" })
     @ApiOkResponse({ example: [LocationsController.ENTITY_EXAMPLE] })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })

@@ -25,7 +25,7 @@ export abstract class BaseController<
         name: "Наименование",
     };
 
-    protected constructor(protected service: T) {}
+    constructor(protected service: T) {}
 
     @ApiOperation({ summary: "Search or get all active items" })
     @ApiOkResponse({ example: [BaseController.ENTITY_EXAMPLE] })

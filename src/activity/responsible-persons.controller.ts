@@ -4,8 +4,4 @@ import { BaseReferencesController } from "./base-references.controller";
 import { ResponsiblePersonsService } from "./responsible-persons.service";
 
 @Controller("responsible-persons")
-export class ResponsiblePersonsController extends BaseReferencesController<ResponsiblePersonsService> {
-    constructor(responsiblePersonsService: ResponsiblePersonsService) {
-        super(responsiblePersonsService);
-    }
-}
+export class ResponsiblePersonsController extends BaseReferencesController<ResponsiblePersonsService> {}

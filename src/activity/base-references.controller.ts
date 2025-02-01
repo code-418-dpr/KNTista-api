@@ -12,10 +12,6 @@ import { BaseController } from "./base.controller";
 import { IdParamDto, NameBodyDto } from "./dto/base.dto";
 
 export abstract class BaseReferencesController<T extends BaseReferencesService> extends BaseController<T> {
-    protected constructor(service: T) {
-        super(service);
-    }
-
     @ApiOperation({ summary: "Add new item" })
     @ApiCreatedResponse({ example: BaseReferencesController.ENTITY_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseReferencesController.INTERNAL_SERVER_ERROR_EXAMPLE })
