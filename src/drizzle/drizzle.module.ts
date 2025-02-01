@@ -19,7 +19,7 @@ import * as schema from "./drizzle-schema";
         }),
         DrizzlePGModule.registerAsync({
             tag: "DB",
-            useFactory: async (configService: ConfigService) => ({
+            useFactory: (configService: ConfigService) => ({
                 pg: {
                     connection: "client",
                     config: {

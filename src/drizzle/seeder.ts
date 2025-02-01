@@ -1,5 +1,5 @@
-import { drizzle } from "drizzle-orm/node-postgres";
 import "dotenv/config";
+import { drizzle } from "drizzle-orm/node-postgres";
 
 import { eventTypes, locations, modules, responsiblePersons } from "./drizzle-schema";
 import { eventTypesData, locationsData, modulesData, responsiblePersonsData } from "./seeder-data";
@@ -9,7 +9,7 @@ const db = drizzle(
 );
 
 async function seedDatabase() {
-    await db.transaction(async (tx) => {
+    return db.transaction(async (tx) => {
         for (const table of [modules, eventTypes, responsiblePersons, locations]) {
             await tx.delete(table);
         }
@@ -21,4 +21,4 @@ async function seedDatabase() {
     });
 }
 
-seedDatabase();
+await seedDatabase();

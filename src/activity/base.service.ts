@@ -32,7 +32,7 @@ export abstract class BaseService<
     protected constructor(
         @Inject("DB") protected readonly db: NodePgDatabase<typeof schema>,
         protected readonly table: T,
-        protected readonly eventForeignKey: Column<ColumnBaseConfig<ColumnDataType, string>, object, object>,
+        protected readonly eventForeignKey: Column,
     ) {}
 
     async getIdByName(name: string) {
@@ -48,7 +48,7 @@ export abstract class BaseService<
 
     async findAll(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        select: SelectedFields<Column<ColumnBaseConfig<ColumnDataType, ColumnDataType>, object, object>, any> = {
+        select: SelectedFields<Column<ColumnBaseConfig<ColumnDataType, ColumnDataType>>, any> = {
             id: this.table.id,
             name: this.table.name,
             currentMonthEventCount: BaseService.CURRENT_MONTH_EVENT_COUNT_SQL_EXPR,
@@ -78,6 +78,7 @@ export abstract class BaseService<
         }));
         if (isUsedInEvent) {
             await this.db
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                 .update(this.table as typeof eventTypes | typeof modules | typeof responsiblePersons | typeof locations)
                 .set({ isDeleted: true })
                 .where(eq(this.table.id, id));

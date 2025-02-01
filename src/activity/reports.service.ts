@@ -1,8 +1,7 @@
-import fs from "fs";
-import path from "path";
-
 import { Injectable } from "@nestjs/common";
 import Docxtemplater from "docxtemplater";
+import fs from "fs";
+import path from "path";
 import PizZip from "pizzip";
 
 import { EventsService } from "./events.service";
@@ -68,7 +67,7 @@ export class ReportsService {
     private async mapModulesAndEvents(startDate: Date, endDate: Date) {
         const events = await this.eventsService.findAll(startDate, endDate);
         const modules = await this.modulesService.search("");
-        const modulesWithRows: { [id: string]: { module: string; rows: { [key: string]: string | number }[] } } = {};
+        const modulesWithRows: Record<string, { module: string; rows: Record<string, string | number>[] }> = {};
         modules.forEach(
             ({ id, name }, index) => (modulesWithRows[id] = { module: `Модуль ${index + 1}. ${name}`, rows: [] }),
         );
