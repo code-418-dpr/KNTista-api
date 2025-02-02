@@ -21,23 +21,40 @@ export class LocationsController extends BaseController<LocationsService> {
         address: "Some address here",
     };
 
+    protected static ENTITY_WITH_EVENT_COUNT_EXAMPLE = {
+        id: "cfc3fab7-1d56-42d4-a489-8a553d81d66d",
+        name: "Some name here",
+        isOffline: true,
+        address: "Some address here",
+        eventCount: 10,
+    };
+
+    constructor(protected service: LocationsService) {
+        super(service);
+    }
+
     @ApiOperation({ summary: "Search or get all active items" })
     @ApiOkResponse({ example: [LocationsController.ENTITY_EXAMPLE] })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Get()
-    async searchOrFindAll(@Query() { name, isOffline, address }: LocationsSearchQueryDto) {
-        if (name || isOffline) {
-            return this.service.search(
-                name,
-                isOffline === "true" ? true : isOffline === "false" ? false : undefined,
-                address,
-            );
-        }
+    async search(@Query() { name, isOffline, address }: LocationsSearchQueryDto) {
+        return this.service.search(
+            name,
+            isOffline === "true" ? true : isOffline === "false" ? false : undefined,
+            address,
+        );
+    }
+
+    @ApiOperation({ summary: "Get all active items" })
+    @ApiOkResponse({ example: [LocationsController.ENTITY_WITH_EVENT_COUNT_EXAMPLE] })
+    @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
+    @Get("event-stats")
+    async findAll() {
         return this.service.findAll();
     }
 
     @ApiOperation({ summary: "Add new item" })
-    @ApiCreatedResponse({ example: LocationsController.ENTITY_EXAMPLE })
+    @ApiCreatedResponse({ example: LocationsController.ENTITY_WITH_EVENT_COUNT_EXAMPLE })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Post("new")
     async insert(@Body() { name, isOffline, address }: LocationsCreateOrUpdateBodyDto) {

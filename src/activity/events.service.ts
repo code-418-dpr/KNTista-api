@@ -63,7 +63,7 @@ export class EventsService {
         module: { id?: string; name?: string },
         startDatesStr: string[],
         endDateStr: string | null | undefined,
-        location: { id?: string; data?: { name: string; isOffline: boolean; address?: string } },
+        location: { id?: string; data?: { name: string; isOffline: boolean; address?: string | null } },
         name: string,
         eventType: { id?: string; name?: string },
         responsiblePerson: { id?: string; name?: string },
@@ -85,10 +85,7 @@ export class EventsService {
         if (!moduleId || !locationId || !eventTypeId || !responsiblePersonId) {
             return;
         }
-        startDatesStr = startDatesStr
-            .map((dateStr) => new Date(dateStr))
-            .sort()
-            .map(String);
+        startDatesStr = startDatesStr.sort();
         const queryResult = await this.db
             .insert(events)
             .values({

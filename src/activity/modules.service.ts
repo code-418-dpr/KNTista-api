@@ -27,11 +27,11 @@ export class ModulesService extends BaseReferencesService {
             .orderBy(asc(modules.number));
     }
 
-    async search(name: string) {
+    async search(name?: string) {
         return this.db
             .select({ id: this.table.id, name: this.table.name })
             .from(this.table)
-            .where(and(ilike(this.table.name, `%${name}%`), eq(this.table.isDeleted, false)))
+            .where(and(name ? ilike(this.table.name, `%${name}%`) : undefined, eq(this.table.isDeleted, false)))
             .orderBy(asc(modules.number));
     }
 

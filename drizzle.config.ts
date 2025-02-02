@@ -4,7 +4,7 @@ import { defineConfig } from "drizzle-kit";
 const configService = new ConfigService();
 
 export default defineConfig({
-    schema: "./src/drizzle/schema.ts",
+    schema: "./src/drizzle/drizzle-schema.ts",
     out: "./src/drizzle/migrations",
     dialect: "postgresql",
     dbCredentials: {

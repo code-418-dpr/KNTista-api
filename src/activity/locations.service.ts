@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { and, asc, eq, ilike } from "drizzle-orm";
+import { and, asc, eq, ilike, isNull } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 import * as schema from "../drizzle/drizzle-schema";
@@ -23,7 +23,7 @@ export class LocationsService extends BaseService<typeof locations> {
         });
     }
 
-    async search(name?: string, isOffline?: boolean, address?: string) {
+    async search(name?: string, isOffline?: boolean, address?: string | null) {
         return this.db
             .select({
                 id: this.table.id,
@@ -36,14 +36,18 @@ export class LocationsService extends BaseService<typeof locations> {
                 and(
                     name ? ilike(this.table.name, name) : undefined,
                     isOffline ? eq(this.table.isOffline, isOffline) : undefined,
-                    address ? eq(this.table.address, address) : undefined,
+                    typeof address === "string"
+                        ? eq(this.table.address, address)
+                        : address === null
+                          ? isNull(this.table.address)
+                          : undefined,
                     eq(this.table.isDeleted, false),
                 ),
             )
             .orderBy(asc(this.table.name));
     }
 
-    async insert(name: string, isOffline: boolean, address?: string) {
+    async insert(name: string, isOffline: boolean, address?: string | null) {
         const queryResults = await this.db
             .insert(this.table)
             .values({ name, address, isOffline })
@@ -58,7 +62,7 @@ export class LocationsService extends BaseService<typeof locations> {
         }
     }
 
-    async updateOne(id: string, name?: string, isOffline?: boolean, address?: string) {
+    async updateOne(id: string, name?: string, isOffline?: boolean, address?: string | null) {
         const updateValues = {
             ...(name !== undefined && { name }),
             ...(address !== undefined && { address }),

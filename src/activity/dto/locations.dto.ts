@@ -11,11 +11,11 @@ export class LocationsCreateOrUpdateBodyDto {
     @IsBoolean()
     isOffline: boolean;
 
-    @ApiProperty({ required: false, example: "г. Донецк, ул. Артёма, 58" })
+    @ApiProperty({ required: false, type: "string", nullable: true, example: "г. Донецк, ул. Артёма, 58" })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    address?: string;
+    address?: string | null;
 }
 
 class LocationsCreateFromEventDto {
@@ -28,11 +28,11 @@ class LocationsCreateFromEventDto {
     @IsBoolean()
     isOffline: boolean;
 
-    @ApiProperty({ required: false, example: "г. Донецк, ул. Артёма, 58" })
+    @ApiProperty({ required: false, type: "string", nullable: true, example: "г. Донецк, ул. Артёма, 58" })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    address?: string;
+    address?: string | null;
 }
 
 export class LocationsSearchOrCreateFromEventDto {
@@ -57,9 +57,9 @@ export class LocationsSearchQueryDto {
     @IsOptional()
     isOffline?: string;
 
-    @ApiProperty({ required: false, type: "string", example: "г. Донецк, ул. Артёма, 58" })
+    @ApiProperty({ required: false, type: "string", nullable: true, example: "г. Донецк, ул. Артёма, 58" })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    address?: string;
+    address?: string | null;
 }

@@ -25,16 +25,27 @@ export abstract class BaseController<
         name: "Наименование",
     };
 
+    protected static ENTITY_WITH_EVENT_COUNT_EXAMPLE = {
+        id: "cfc3fab7-1d56-42d4-a489-8a553d81d66d",
+        name: "Наименование",
+        eventCount: 10,
+    };
+
     constructor(protected service: T) {}
 
-    @ApiOperation({ summary: "Search or get all active items" })
+    @ApiOperation({ summary: "Search active items" })
     @ApiOkResponse({ example: [BaseController.ENTITY_EXAMPLE] })
     @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
     @Get()
-    async searchOrFindAll(@Query() { name }: NameQueryDto) {
-        if (name !== undefined) {
-            return this.service.search(name);
-        }
+    async search(@Query() { name }: NameQueryDto) {
+        return this.service.search(name);
+    }
+
+    @ApiOperation({ summary: "Get all active items" })
+    @ApiOkResponse({ example: [BaseController.ENTITY_WITH_EVENT_COUNT_EXAMPLE] })
+    @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
+    @Get("event-stats")
+    async findAll() {
         return this.service.findAll();
     }
 

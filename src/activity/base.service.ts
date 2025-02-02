@@ -60,14 +60,14 @@ export abstract class BaseService<
             .leftJoin(events, eq(this.eventForeignKey, this.table.id))
             .where(eq(this.table.isDeleted, false))
             .groupBy(this.table.id)
-            .orderBy(desc(count(events.id)), asc(this.table.name));
+            .orderBy(desc(BaseService.CURRENT_MONTH_EVENT_COUNT_SQL_EXPR), asc(this.table.name));
     }
 
-    async search(name: string) {
+    async search(name?: string) {
         return this.db
             .select({ id: this.table.id, name: this.table.name })
             .from(this.table)
-            .where(and(ilike(this.table.name, `%${name}%`), eq(this.table.isDeleted, false)))
+            .where(and(name ? ilike(this.table.name, `%${name}%`) : undefined, eq(this.table.isDeleted, false)))
             .orderBy(asc(this.table.name));
     }
 

@@ -28,6 +28,6 @@ LICENSE
 
 test
 **/*.spec.ts
-eslint.config.js
-prettier.config.js
+eslint.config.mjs
+prettier.config.mjs
 jest.config.json
