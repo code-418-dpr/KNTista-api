@@ -1,7 +1,7 @@
-import Joi from "@hapi/joi";
 import { DrizzlePGModule } from "@knaadh/nestjs-drizzle-pg";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import Joi from "joi";
 
 import * as schema from "./drizzle-schema";
 

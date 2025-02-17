@@ -23,11 +23,12 @@
 **/values.dev.yaml
 **/build
 **/dist
-LICENSE
+**/LICENSE
 **/*.md
 
-test
+**/.env.template
 **/*.spec.ts
+test
 eslint.config.mjs
 prettier.config.mjs
 jest.config.json
