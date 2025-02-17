@@ -43,7 +43,9 @@ jobs:
                   restore-keys: ${{ runner.os }}-pnpm-
 
             - name: Install dependencies
-              run: pnpm i --frozen-lockfile
+              run: |
+                  npm i pnpm
+                  pnpm i --frozen-lockfile
 
             - name: Run tests
               run: pnpm test
