@@ -1381,10 +1381,10 @@
   resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-2.1.0.tgz#b9b536b7c3571567aa1d0223db8baa1a51505a19"
   integrity sha512-W+n+rM69XsFdwORF11UqJahn4J3xi4g/ZEOlJNL6KoW5ygWSmBB2p0S2BZ4FQeS/NDH72e6xIcu35SfJnE8bXw==
 
-"@nestjs/platform-fastify@^11.0.0":
-  version "11.0.5"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-11.0.5.tgz#07bb7d8bea7f205bdc6e21fb01fafa90a2d9cf45"
-  integrity sha512-2bVBvklXlalAoEnU1xg76SuPZPrB5foMlajXdhw9+ovdl+apinnLKvLG8qZFFwZMAHzlqi3dk4aHLrI+OOSDcA==
+"@nestjs/platform-fastify@^11.0.9":
+  version "11.0.9"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-11.0.9.tgz#11dd5c6661c367381a08c7dd302a299203a353a5"
+  integrity sha512-QK+q6D+6sZu6rwdrYSYXFeW26yO0K2OA7ddHvuUud2gY5KYKsLdiM4fEY7MBrn9tJOZiKuVmJpJ4EqnDTVJMWw==
   dependencies:
     "@fastify/cors" "10.0.2"
     "@fastify/formbody" "8.0.2"
