@@ -42,10 +42,11 @@ jobs:
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
                   restore-keys: ${{ runner.os }}-pnpm-
 
+            - name: pnpm-setup
+              uses: pnpm/action-setup@v2
+
             - name: Install dependencies
-              run: |
-                  npm i pnpm
-                  pnpm i --frozen-lockfile
+              run: pnpm i --frozen-lockfile
 
             - name: Run formatter
               run: pnpm format
