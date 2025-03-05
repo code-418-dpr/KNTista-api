@@ -6,10 +6,12 @@ on:
     push:
         paths:
             - "**.js"
+            - "**.mjs"
             - "**.ts"
     pull_request:
         paths:
             - "**.js"
+            - "**.mjs"
             - "**.ts"
 
 jobs:

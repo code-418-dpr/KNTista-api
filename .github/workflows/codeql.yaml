@@ -5,12 +5,14 @@ on:
         branches: ["main"]
         paths:
             - "**.js"
+            - "**.mjs"
             - "**.ts"
             - ".github/**"
     pull_request:
         branches: ["main"]
         paths:
             - "**.js"
+            - "**.mjs"
             - "**.ts"
             - ".github/**"
     schedule:
