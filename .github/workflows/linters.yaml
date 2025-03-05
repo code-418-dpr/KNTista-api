@@ -1,0 +1,97 @@
+name: Linters
+permissions:
+    contents: read
+    pull-requests: read
+on:
+    push:
+        paths:
+            - "**.js"
+            - "**.ts"
+    pull_request:
+        paths:
+            - "**.js"
+            - "**.ts"
+
+jobs:
+    setup:
+        runs-on: ubuntu-latest
+        outputs:
+            cache-key: ${{ steps.cache-deps.outputs.cache-hit }}
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "23"
+
+            - name: Cache dependencies
+              uses: actions/cache@v4
+              id: cache-deps
+              with:
+                  path: ~/.cache/pnpm
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+                  restore-keys: ${{ runner.os }}-pnpm-
+
+            - name: pnpm-setup
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 10
+
+            - name: Install dependencies
+              run: pnpm i --frozen-lockfile
+
+    eslint:
+        runs-on: ubuntu-latest
+        needs: setup
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "23"
+
+            - name: Cache dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/pnpm
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+                  restore-keys: ${{ runner.os }}-pnpm-
+
+            - name: pnpm-setup
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 10
+
+            - name: Run ESLint
+              run: pnpm lint
+
+    prettier:
+        runs-on: ubuntu-latest
+        needs: setup
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "23"
+
+            - name: Cache dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/pnpm
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+                  restore-keys: ${{ runner.os }}-pnpm-
+
+            - name: pnpm-setup
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 10
+
+            - name: Run Prettier
+              run: pnpm format

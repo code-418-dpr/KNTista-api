@@ -4,8 +4,9 @@
 [![release](https://img.shields.io/github/v/release/Scorpi-ON/KNTista-api?include_prereleases)](https://github.com/Scorpi-ON/KNTista-api/releases)
 [![downloads](https://img.shields.io/github/downloads/Scorpi-ON/KNTista-api/total)](https://github.com/Scorpi-ON/KNTista-api/releases)
 [![code size](https://img.shields.io/github/languages/code-size/Scorpi-ON/KNTista-api.svg)](https://github.com/Scorpi-ON/KNTista-api)
-[![tests](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/tests.yaml/badge.svg)](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/tests.yaml)
-[![linter](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/linter.yaml/badge.svg)](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/linter.yaml)
+
+[![linters](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/linters.yaml/badge.svg)](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/linter.yaml)
+[![codeql](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/codeql.yaml/badge.svg)](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/codeql.yaml)
 
 Бэкенд для проекта KNTista
 
@@ -44,6 +45,17 @@
 
 1. Установите Docker.
 2. Создайте файл `.env` на основе [.env.template](.env.template) и настройте все описанные там сервисы.
+3. Запустите сборку образа:
+
+```shell
+docker build -t kntista-api .
+```
+
+4. Теперь запускать образ можно командой:
+
+```shell
+docker run -d --name kntista-api-standalone -p 3000:3000 kntista-api
+```
 
 ...
 
