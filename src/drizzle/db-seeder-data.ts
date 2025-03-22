@@ -19,7 +19,7 @@ export const responsiblePersonsData = [
     "Голобородько Д.М.",
     "Головин Д.А.",
     "Козленко В.Д.",
-    "Дегтярёв Т.Р.",
+    "Хорунжий Д.А.",
 ].map((name) => ({ name }));
 
 export const locationsData = [

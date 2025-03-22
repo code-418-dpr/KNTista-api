@@ -1,4 +1,5 @@
 import { ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
@@ -18,7 +19,9 @@ async function bootstrap() {
 
     app.useGlobalPipes(new ValidationPipe());
 
-    await app.listen(process.env.PORT!, "0.0.0.0");
+    const configService = app.get(ConfigService);
+    const port = configService.get<number>("PORT")!;
+    await app.listen(port, "0.0.0.0");
 }
 
 void bootstrap();
