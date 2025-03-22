@@ -7,6 +7,7 @@
 
 [![linters](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/linters.yaml/badge.svg)](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/linter.yaml)
 [![codeql](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/codeql.yaml/badge.svg)](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/codeql.yaml)
+[![build](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/build.yaml/badge.svg)](https://github.com/Scorpi-ON/KNTista-api/actions/workflows/build.yaml)
 
 Бэкенд для проекта KNTista
 
@@ -17,6 +18,7 @@
     - [x] CRUD-операции со всеми сущностями
     - [x] создание DOCX-отчётов об активности
 - [x] документация Swagger
+- [x] интеграция CI/CD
 - [ ] авторизация JWT и OAuth
 - [ ] логирование
 - [ ] кеширование ответов сервера
