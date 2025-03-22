@@ -1,7 +1,7 @@
 ARG NODE_VERSION=23
 FROM node:${NODE_VERSION}-alpine AS base
 RUN --mount=type=cache,target=/root/.npm \
-    npm i -g pnpm@latest-9
+    npm i -g pnpm@latest-10
 WORKDIR /app
 COPY package.json .
 
