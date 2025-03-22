@@ -2,8 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { inArray, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { events } from "../drizzle/drizzle-schema";
-import * as schema from "../drizzle/drizzle-schema";
+import { events } from "../drizzle/drizzle.schema";
+import * as schema from "../drizzle/drizzle.schema";
 
 import { EventTypesService } from "./event-types.service";
 import { LocationsService } from "./locations.service";

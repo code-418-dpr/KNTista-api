@@ -1,7 +1,7 @@
 import { Delete, Get, Param, Query } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 
-import { eventTypes, locations, modules, responsiblePersons } from "../drizzle/drizzle-schema";
+import { eventTypes, locations, modules, responsiblePersons } from "../drizzle/drizzle.schema";
 
 import { BaseService } from "./base.service";
 import { IdParamDto, NameQueryDto } from "./dto/base.dto";

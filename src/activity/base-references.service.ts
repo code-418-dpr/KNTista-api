@@ -1,8 +1,8 @@
 import { Column, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { eventTypes, modules, responsiblePersons } from "../drizzle/drizzle-schema";
-import * as schema from "../drizzle/drizzle-schema";
+import { eventTypes, modules, responsiblePersons } from "../drizzle/drizzle.schema";
+import * as schema from "../drizzle/drizzle.schema";
 
 import { BaseService } from "./base.service";
 

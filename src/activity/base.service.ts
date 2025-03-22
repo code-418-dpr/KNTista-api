@@ -16,8 +16,8 @@ import {
 } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { eventTypes, events, locations, modules, responsiblePersons } from "../drizzle/drizzle-schema";
-import * as schema from "../drizzle/drizzle-schema";
+import { eventTypes, events, locations, modules, responsiblePersons } from "../drizzle/drizzle.schema";
+import * as schema from "../drizzle/drizzle.schema";
 
 export abstract class BaseService<
     T extends typeof eventTypes | typeof modules | typeof responsiblePersons | typeof locations,

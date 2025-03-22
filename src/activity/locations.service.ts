@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { and, asc, eq, ilike, isNull } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import * as schema from "../drizzle/drizzle-schema";
-import { events, locations } from "../drizzle/drizzle-schema";
+import * as schema from "../drizzle/drizzle.schema";
+import { events, locations } from "../drizzle/drizzle.schema";
 
 import { BaseService } from "./base.service";
 

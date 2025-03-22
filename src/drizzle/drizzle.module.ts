@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import databaseConfig from "../config/database.config";
 
-import * as schema from "./drizzle-schema";
+import * as schema from "./drizzle.schema";
 
 @Module({
     imports: [
