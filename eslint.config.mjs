@@ -1,5 +1,5 @@
 import { includeIgnoreFile } from "@eslint/compat";
-import js from "@eslint/js";
+import eslint from "@eslint/js";
 import path from "path";
 import tseslint from "typescript-eslint";
 
@@ -14,7 +14,16 @@ export default tseslint.config(
             ecmaVersion: "latest",
             sourceType: "commonjs",
         },
-        extends: [js.configs.recommended],
+        extends: [eslint.configs.recommended],
+    },
+
+    {
+        files: ["**/*.mjs"],
+        languageOptions: {
+            ecmaVersion: "latest",
+            sourceType: "module",
+        },
+        extends: [eslint.configs.recommended],
     },
 
     {
@@ -27,7 +36,11 @@ export default tseslint.config(
                 tsconfigRootDir: import.meta.dirname,
             },
         },
-        extends: [js.configs.recommended, tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked],
+        extends: [
+            eslint.configs.recommended,
+            tseslint.configs.strictTypeChecked,
+            tseslint.configs.stylisticTypeChecked,
+        ],
         rules: {
             "@typescript-eslint/restrict-template-expressions": "off",
             "@typescript-eslint/no-non-null-assertion": "off",
