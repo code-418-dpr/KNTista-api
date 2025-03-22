@@ -7,14 +7,14 @@ on:
             - "**.js"
             - "**.mjs"
             - "**.ts"
-            - ".github/**"
+            - ".github"
     pull_request:
         branches: ["main"]
         paths:
             - "**.js"
             - "**.mjs"
             - "**.ts"
-            - ".github/**"
+            - ".github"
     schedule:
         - cron: "0 0 * * 1"
 

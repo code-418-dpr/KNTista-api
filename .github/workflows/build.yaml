@@ -1,0 +1,65 @@
+name: Build
+permissions:
+    contents: read
+    pull-requests: read
+
+on:
+    push:
+        branches: ["main"]
+        paths-ignore:
+            - "*.md"
+            - "LICENSE"
+            - ".gitignore"
+            - "Dockerfile"
+            - "compose.yaml"
+            - ".dockerignore"
+            - ".env*"
+    pull_request:
+        branches: ["main"]
+        paths-ignore:
+            - "*.md"
+            - "LICENSE"
+            - ".gitignore"
+            - "Dockerfile"
+            - "compose.yaml"
+            - ".dockerignore"
+            - ".env*"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "23"
+
+            - name: Cache dependencies
+              uses: actions/cache@v4
+              id: cache-deps
+              with:
+                  path: ~/.cache/pnpm
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+                  restore-keys: ${{ runner.os }}-pnpm-
+
+            - name: Cache build
+              uses: actions/cache@v4
+              with:
+                  path: ${{ github.workspace }}/dist
+                  key: ${{ runner.os }}-nestbuild-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.mjs', '**/*.ts') }}
+                  restore-keys: ${{ runner.os }}-nestbuild-${{ hashFiles('pnpm-lock.yaml') }}-
+
+            - name: pnpm-setup
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 10
+
+            - name: Install dependencies
+              run: pnpm i --frozen-lockfile
+
+            - name: Build project
+              run: pnpm build
