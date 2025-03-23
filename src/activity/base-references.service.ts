@@ -1,5 +1,6 @@
-import { Column, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { PgColumn } from "drizzle-orm/pg-core";
 
 import { eventTypes, modules, responsiblePersons } from "../drizzle/drizzle.schema";
 import * as schema from "../drizzle/drizzle.schema";
@@ -12,7 +13,7 @@ export abstract class BaseReferencesService extends BaseService<
     protected constructor(
         db: NodePgDatabase<typeof schema>,
         table: typeof eventTypes | typeof modules | typeof responsiblePersons,
-        eventForeignKey: Column,
+        eventForeignKey: PgColumn,
     ) {
         super(db, table, eventForeignKey);
     }

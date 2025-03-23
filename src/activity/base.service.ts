@@ -1,6 +1,5 @@
 import { Inject } from "@nestjs/common";
 import {
-    Column,
     ColumnBaseConfig,
     ColumnDataType,
     SelectedFields,
@@ -15,6 +14,7 @@ import {
     sql,
 } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { PgColumn } from "drizzle-orm/pg-core";
 
 import { eventTypes, events, locations, modules, responsiblePersons } from "../drizzle/drizzle.schema";
 import * as schema from "../drizzle/drizzle.schema";
@@ -32,7 +32,7 @@ export abstract class BaseService<T extends BaseTable> {
     protected constructor(
         @Inject("DB") protected readonly db: NodePgDatabase<typeof schema>,
         protected readonly table: T,
-        protected readonly eventForeignKey: Column,
+        protected readonly eventForeignKey: PgColumn,
     ) {}
 
     async getIdByName(name: string) {
@@ -42,14 +42,12 @@ export abstract class BaseService<T extends BaseTable> {
             .from(this.table as BaseTable)
             .where(eq(this.table.name, name))
             .limit(1);
-        if (queryResults.length > 0) {
-            return queryResults[0].id;
-        }
+        return queryResults[0]?.id;
     }
 
     async findAll(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        select: SelectedFields<Column<ColumnBaseConfig<ColumnDataType, ColumnDataType>>, any> = {
+        select: SelectedFields<PgColumn<ColumnBaseConfig<ColumnDataType, ColumnDataType>>, any> = {
             id: this.table.id,
             name: this.table.name,
             currentMonthEventCount: BaseService.CURRENT_MONTH_EVENT_COUNT_SQL_EXPR,
