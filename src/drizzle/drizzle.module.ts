@@ -2,7 +2,7 @@ import { DrizzlePGModule } from "@knaadh/nestjs-drizzle-pg";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import databaseConfig from "../config/database.config";
+import databaseConfig from "../config/db.config";
 
 import * as schema from "./drizzle.schema";
 
@@ -15,11 +15,11 @@ import * as schema from "./drizzle.schema";
                 pg: {
                     connection: "client",
                     config: {
-                        host: configService.get<string>("POSTGRES_HOST"),
-                        port: configService.get<number>("POSTGRES_PORT"),
-                        user: configService.get<string>("POSTGRES_USER"),
-                        password: configService.get<string>("POSTGRES_PASSWORD"),
-                        database: configService.get<string>("POSTGRES_DB"),
+                        host: configService.get<string>("db.host"),
+                        port: configService.get<number>("db.port"),
+                        database: configService.get<string>("db.db"),
+                        user: configService.get<string>("db.user"),
+                        password: configService.get<string>("db.password"),
                         ssl: false,
                     },
                 },
