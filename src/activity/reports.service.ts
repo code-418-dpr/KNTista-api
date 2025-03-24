@@ -56,12 +56,14 @@ export class ReportsService {
     }
 
     private static mapParticipantsCount(participantsCount: number) {
-        if (participantsCount === -1) {
-            return "Все желающие вуза";
-        } else if (participantsCount === 0) {
-            return "Все желающие факультета";
+        switch (participantsCount) {
+            case -1:
+                return "Все желающие вуза";
+            case 0:
+                return "Все желающие факультета";
+            default:
+                return participantsCount;
         }
-        return participantsCount;
     }
 
     private async mapModulesAndEvents(startDate: Date, endDate: Date) {
@@ -74,9 +76,9 @@ export class ReportsService {
         events.forEach((event) => {
             modulesWithRows[event.moduleId].rows.push({
                 dates: ReportsService.getDates(
-                    event.startDates as unknown as Date[],
+                    event.startDates.map((date) => new Date(date)),
                     event.endDate ? new Date(event.endDate) : null,
-                ), // startDates is Date in fact, but endDate is string
+                ),
                 venue: ReportsService.getVenue(event.location.name, event.location.address),
                 isOffline: event.location.isOffline ? "Очно" : "Онлайн",
                 name: event.name,

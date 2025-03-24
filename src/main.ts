@@ -1,4 +1,3 @@
-import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
@@ -17,10 +16,8 @@ async function bootstrap() {
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup("docs", app, documentFactory);
 
-    app.useGlobalPipes(new ValidationPipe());
-
     const configService = app.get(ConfigService);
-    const port = configService.get<number>("PORT")!;
+    const port = configService.get<number>("web.port")!;
     await app.listen(port, "0.0.0.0");
 }
 

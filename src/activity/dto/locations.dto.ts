@@ -1,65 +1,55 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsBooleanString, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import Joi from "joi";
+import { JoiSchema } from "nestjs-joi";
+
+const locationsCreateOrUpdateBodySchema = Joi.object({
+    name: Joi.string().required(),
+    isOffline: Joi.boolean().required(),
+    address: Joi.string().allow(null).optional(),
+});
 
 export class LocationsCreateOrUpdateBodyDto {
     @ApiProperty({ example: "1 корпус ДонНТУ" })
-    @IsString()
-    @IsNotEmpty()
+    @JoiSchema(Joi.string().required())
     name: string;
 
     @ApiProperty()
-    @IsBoolean()
+    @JoiSchema(Joi.boolean().required())
     isOffline: boolean;
 
     @ApiProperty({ required: false, type: "string", nullable: true, example: "г. Донецк, ул. Артёма, 58" })
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
-    address?: string | null;
-}
-
-class LocationsCreateFromEventDto {
-    @ApiProperty({ example: "1 корпус ДонНТУ" })
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-
-    @ApiProperty()
-    @IsBoolean()
-    isOffline: boolean;
-
-    @ApiProperty({ required: false, type: "string", nullable: true, example: "г. Донецк, ул. Артёма, 58" })
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
+    @JoiSchema(Joi.string().allow(null).optional())
     address?: string | null;
 }
 
 export class LocationsSearchOrCreateFromEventDto {
     @ApiProperty({ required: false, example: "f5050daa-2e61-4f4f-adda-28cea31608ce" })
-    @IsUUID()
-    @IsOptional()
+    @JoiSchema(Joi.string().uuid().optional())
     id?: string;
 
     @ApiProperty({ required: false })
-    @IsOptional()
-    data?: LocationsCreateFromEventDto;
+    @JoiSchema(locationsCreateOrUpdateBodySchema.optional())
+    data?: LocationsCreateOrUpdateBodyDto;
 }
 
 export class LocationsSearchQueryDto {
     @ApiProperty({ required: false, example: "1 корпус ДонНТУ" })
-    @IsString()
-    @IsOptional()
+    @JoiSchema(Joi.string().optional())
     name?: string;
 
     @ApiProperty({ required: false, type: "boolean" })
-    @IsBooleanString()
-    @IsOptional()
-    isOffline?: string;
+    @JoiSchema(
+        Joi.boolean()
+            .optional()
+            .custom((value: string, helpers) => {
+                if (value.toLowerCase() === "true") return true;
+                if (value.toLowerCase() === "false") return false;
+                return helpers.error("any.invalid");
+            }),
+    )
+    isOffline?: boolean;
 
     @ApiProperty({ required: false, type: "string", nullable: true, example: "г. Донецк, ул. Артёма, 58" })
-    @IsString()
-    @IsNotEmpty()
-    @IsOptional()
+    @JoiSchema(Joi.string().allow(null).optional())
     address?: string | null;
 }

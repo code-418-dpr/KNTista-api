@@ -1,77 +1,113 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {
-    ArrayMinSize,
-    IsArray,
-    IsDateString,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
-    IsUUID,
-    IsUrl,
-    Min,
-} from "class-validator";
+import Joi from "joi";
+import { JoiSchema } from "nestjs-joi";
 
 import { IdOrNameDto } from "./base.dto";
 import { LocationsSearchOrCreateFromEventDto } from "./locations.dto";
 
 export class EventsSearchQueryDto {
     @ApiProperty({ required: false, type: "string", format: "date", example: "2025-01-01" })
-    @IsDateString()
-    @IsOptional()
-    startDateStr?: string;
+    @JoiSchema(
+        Joi.string()
+            .isoDate()
+            .optional()
+            .custom((value: string) => new Date(value)),
+    )
+    startDate?: Date;
 
     @ApiProperty({ required: false, type: "string", format: "date", example: "2025-01-10" })
-    @IsDateString()
-    @IsOptional()
-    endDateStr?: string;
+    @JoiSchema(
+        Joi.string()
+            .isoDate()
+            .optional()
+            .custom((value: string) => new Date(value)),
+    )
+    endDate?: Date;
 }
 
 export class EventsCreateBodyDto {
     @ApiProperty()
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            name: Joi.string().optional(),
+        })
+            .or("id", "name")
+            .required(),
+    )
     module: IdOrNameDto;
 
     @ApiProperty({ example: ["2025-01-01"] })
-    @IsArray()
-    @ArrayMinSize(1)
-    @IsDateString(undefined, { each: true })
-    startDatesStr: string[];
+    @JoiSchema(
+        Joi.array()
+            .items(Joi.string().isoDate())
+            .min(1)
+            .required()
+            .custom((values: string[]) => values.map((v) => new Date(v))),
+    )
+    startDates: Date[];
 
     @ApiProperty({ required: false, example: "2025-01-10" })
-    @IsDateString()
-    @IsOptional()
-    endDateStr?: string;
+    @JoiSchema(
+        Joi.string()
+            .isoDate()
+            .optional()
+            .custom((value: string) => new Date(value)),
+    )
+    endDate?: Date;
 
     @ApiProperty()
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            data: Joi.object({
+                name: Joi.string().required(),
+                isOffline: Joi.boolean().required(),
+                address: Joi.string().allow(null).optional(),
+            }).optional(),
+        })
+            .or("id", "data")
+            .required(),
+    )
     location: LocationsSearchOrCreateFromEventDto;
 
     @ApiProperty({ example: "Наименование" })
-    @IsString()
-    @IsNotEmpty()
+    @JoiSchema(Joi.string().required())
     name: string;
 
     @ApiProperty()
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            name: Joi.string().optional(),
+        })
+            .or("id", "name")
+            .required(),
+    )
     eventType: IdOrNameDto;
 
     @ApiProperty()
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            name: Joi.string().optional(),
+        })
+            .or("id", "name")
+            .required(),
+    )
     responsiblePerson: IdOrNameDto;
 
     @ApiProperty({ example: 10 })
-    @IsNumber()
-    @Min(-1)
+    @JoiSchema(Joi.number().min(-1).required())
     participantsCount: number;
 
     @ApiProperty({ example: ["https://habr.com/ru/articles/870470/", "https://vk.com/wall-67577440_6457"] })
-    @IsArray()
-    @ArrayMinSize(1)
-    @IsUrl(undefined, { each: true })
+    @JoiSchema(Joi.array().items(Joi.string().uri()).min(1).required())
     links: string[];
 }
 
 export class EventsDeleteBodyDto {
     @ApiProperty({ example: ["5c041dcb-be0c-456b-90d7-3ffcbf8790d0", "f5050daa-2e61-4f4f-adda-28cea31608ce"] })
-    @IsArray()
-    @IsNotEmpty()
-    @IsUUID("4", { each: true })
+    @JoiSchema(Joi.array().items(Joi.string().uuid()).min(1).required())
     ids: string[];
 }

@@ -12,19 +12,10 @@ export class ReportsController {
     @ApiOperation({ summary: "Search or get all active items" })
     @ApiOkResponse()
     @ApiInternalServerErrorResponse({ example: BaseController.SWAGGER_EXAMPLES.internal_server_error })
-    @Get(":yearStr/:monthStr")
+    @Get(":year/:month")
     @Header("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     @Header("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent("Отчёт.docx")}`)
-    async getReportForMonth(@Param() { yearStr, monthStr }: ReportsYearAndMonthParamDto) {
-        const year = +yearStr;
-        const month = +monthStr;
-        const currentYear = new Date().getFullYear();
-        if (year < currentYear - 1 || year > currentYear) {
-            throw new Error();
-        }
-        if (month < 1 || month > 12) {
-            throw new Error();
-        }
+    async getReportForMonth(@Param() { year, month }: ReportsYearAndMonthParamDto) {
         return new StreamableFile(await this.service.genReport(year, month));
     }
 }

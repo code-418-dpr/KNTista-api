@@ -40,11 +40,7 @@ export class LocationsController extends BaseController<LocationsService> {
     @ApiInternalServerErrorResponse({ example: LocationsController.SWAGGER_EXAMPLES.internal_server_error })
     @Get()
     async search(@Query() { name, isOffline, address }: LocationsSearchQueryDto) {
-        return this.service.search(
-            name,
-            isOffline === "true" ? true : isOffline === "false" ? false : undefined,
-            address,
-        );
+        return this.service.search(name, isOffline, address);
     }
 
     @ApiOperation({ summary: "Get all active items" })

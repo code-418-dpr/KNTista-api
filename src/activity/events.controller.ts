@@ -35,14 +35,7 @@ export class EventsController {
     @ApiOkResponse({ example: [EventsController.SWAGGER_EXAMPLES.entity_with_event_count] })
     @ApiInternalServerErrorResponse({ example: EventsController.SWAGGER_EXAMPLES.internal_server_error })
     @Get()
-    async findAll(@Query() { startDateStr, endDateStr }: EventsSearchQueryDto) {
-        let startDate: Date | undefined, endDate: Date | undefined;
-        if (startDateStr) {
-            startDate = new Date(startDateStr);
-        }
-        if (endDateStr) {
-            endDate = new Date(endDateStr);
-        }
+    async findAll(@Query() { startDate, endDate }: EventsSearchQueryDto) {
         return this.service.findAll(startDate, endDate);
     }
 
@@ -53,8 +46,8 @@ export class EventsController {
     async insert(@Body() body: EventsCreateBodyDto) {
         return this.service.insert(
             body.module,
-            body.startDatesStr,
-            body.endDateStr,
+            body.startDates,
+            body.endDate,
             body.location,
             body.name,
             body.eventType,
