@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Get,
+    InternalServerErrorException,
+    Param,
+    Post,
+    Put,
+    Query,
+} from "@nestjs/common";
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
@@ -65,6 +75,13 @@ export class LocationsController extends BaseController<LocationsService> {
     @ApiInternalServerErrorResponse({ example: LocationsController.SWAGGER_EXAMPLES.internal_server_error })
     @Put(":id")
     async updateOne(@Param() { id }: IdParamDto, @Body() body: LocationsCreateOrUpdateBodyDto) {
-        return this.service.updateOne(id, body.name, body.isOffline, body.address);
+        try {
+            return await this.service.updateOne(id, body.name, body.isOffline, body.address);
+        } catch (e: unknown) {
+            if (typeof e === "object" && e !== null && "code" in e && e.code === "23505") {
+                throw new BadRequestException("Unique key violation during update");
+            }
+            throw new InternalServerErrorException();
+        }
     }
 }
