@@ -68,7 +68,7 @@ export class ReportsService {
 
     private async mapModulesAndEvents(startDate: Date, endDate: Date) {
         const events = await this.eventsService.findAll(startDate, endDate);
-        const modules = await this.modulesService.search("");
+        const modules = await this.modulesService.search();
         const modulesWithRows: Record<string, { module: string; rows: Record<string, string | number>[] }> = {};
         modules.forEach(
             ({ id, name }, index) => (modulesWithRows[id] = { module: `Модуль ${index + 1}. ${name}`, rows: [] }),

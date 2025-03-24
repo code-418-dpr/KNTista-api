@@ -81,7 +81,7 @@ export class LocationsController extends BaseController<LocationsService> {
             if (typeof e === "object" && e !== null && "code" in e && e.code === "23505") {
                 throw new BadRequestException("Unique key violation during update");
             }
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(e);
         }
     }
 }

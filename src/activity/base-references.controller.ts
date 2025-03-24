@@ -27,7 +27,7 @@ export abstract class BaseReferencesController<T extends BaseReferencesService> 
             if (typeof e === "object" && e !== null && "code" in e && e.code === "23505") {
                 throw new BadRequestException("Unique key violation during update");
             }
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(e);
         }
     }
 
@@ -43,7 +43,7 @@ export abstract class BaseReferencesController<T extends BaseReferencesService> 
             if (typeof e === "object" && e !== null && "code" in e && e.code === "23505") {
                 throw new BadRequestException("Unique key violation during update");
             }
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(e);
         }
     }
 }

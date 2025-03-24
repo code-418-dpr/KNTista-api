@@ -12,7 +12,7 @@ export class ReportsYearAndMonthParamDto {
                 const num = +value;
                 const currentYear = new Date().getFullYear();
                 if (num < 2000 || num > currentYear) {
-                    throw new Error("Year must be between 2000 and current year");
+                    throw new Error("year must be between 2000 and current year");
                 }
                 return num;
             }),
@@ -27,7 +27,7 @@ export class ReportsYearAndMonthParamDto {
             .custom((value: string) => {
                 const num = +value;
                 if (num < 1 || num > 12) {
-                    throw new Error("Month must be between 1 and 12");
+                    throw new Error("month must be between 1 and 12");
                 }
                 return num;
             }),
