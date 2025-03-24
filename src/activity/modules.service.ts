@@ -68,16 +68,18 @@ export class ModulesService extends BaseReferencesService {
             orderBy: asc(modules.number),
         });
         ids.push(...notPassedIds.map((item) => item.id));
+
+        // for CodeQL
         if (ids.length > 100) {
             throw new Error();
         }
 
         return await this.db.transaction(async (tx) => {
             const updatedResults = [];
-            for (let i = 0; i < ids.length; ) {
+            for (let i = 0; i < ids.length; ++i) {
                 const queryResults = await tx
                     .update(modules)
-                    .set({ number: ++i })
+                    .set({ number: i + 1 })
                     .where(eq(this.table.id, ids[i]))
                     .returning();
                 updatedResults.push(queryResults[0]);
