@@ -38,15 +38,7 @@ export class LocationsSearchQueryDto {
     name?: string;
 
     @ApiProperty({ required: false, type: "boolean" })
-    @JoiSchema(
-        Joi.boolean()
-            .optional()
-            .custom((value: string, helpers) => {
-                if (value.toLowerCase() === "true") return true;
-                if (value.toLowerCase() === "false") return false;
-                return helpers.error("any.invalid");
-            }),
-    )
+    @JoiSchema(Joi.boolean().optional())
     isOffline?: boolean;
 
     @ApiProperty({ required: false, type: "string", nullable: true, example: "г. Донецк, ул. Артёма, 58" })

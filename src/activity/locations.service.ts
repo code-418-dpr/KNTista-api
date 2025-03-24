@@ -34,13 +34,13 @@ export class LocationsService extends BaseService<typeof locations> {
             .from(this.table)
             .where(
                 and(
-                    name ? ilike(this.table.name, `%${name}%`) : undefined,
-                    isOffline ? eq(this.table.isOffline, isOffline) : undefined,
-                    typeof address === "string"
-                        ? ilike(this.table.address, `%${address}%`)
+                    name === undefined ? undefined : ilike(this.table.name, `%${name}%`),
+                    isOffline === undefined ? undefined : eq(this.table.isOffline, isOffline),
+                    address === undefined
+                        ? undefined
                         : address === null
                           ? isNull(this.table.address)
-                          : undefined,
+                          : ilike(this.table.address, `%${address}%`),
                     eq(this.table.isDeleted, false),
                 ),
             )
