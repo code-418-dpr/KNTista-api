@@ -2,19 +2,13 @@ import { eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { PgColumn } from "drizzle-orm/pg-core";
 
-import { eventTypes, modules, responsiblePersons } from "../drizzle/drizzle.schema";
+import { BaseReferenceTable } from "../drizzle/drizzle.schema";
 import * as schema from "../drizzle/drizzle.schema";
 
 import { BaseService } from "./base.service";
 
-export abstract class BaseReferencesService extends BaseService<
-    typeof eventTypes | typeof modules | typeof responsiblePersons
-> {
-    protected constructor(
-        db: NodePgDatabase<typeof schema>,
-        table: typeof eventTypes | typeof modules | typeof responsiblePersons,
-        eventForeignKey: PgColumn,
-    ) {
+export abstract class BaseReferencesService extends BaseService<BaseReferenceTable> {
+    protected constructor(db: NodePgDatabase<typeof schema>, table: BaseReferenceTable, eventForeignKey: PgColumn) {
         super(db, table, eventForeignKey);
     }
 
@@ -29,8 +23,9 @@ export abstract class BaseReferencesService extends BaseService<
             })
             .returning();
         if (queryResults.length > 0) {
-            return queryResults[0];
+            return { insertedOrRestored: queryResults[0] };
         }
+        return { insertedOrRestored: null };
     }
 
     async updateOne(id: string, newName: string) {
@@ -40,7 +35,8 @@ export abstract class BaseReferencesService extends BaseService<
             .where(eq(this.table.id, id))
             .returning();
         if (queryResults.length > 0) {
-            return queryResults[0];
+            return { updated: queryResults[0] };
         }
+        return { updated: null };
     }
 }

@@ -34,10 +34,10 @@ export class LocationsService extends BaseService<typeof locations> {
             .from(this.table)
             .where(
                 and(
-                    name ? ilike(this.table.name, name) : undefined,
+                    name ? ilike(this.table.name, `%${name}%`) : undefined,
                     isOffline ? eq(this.table.isOffline, isOffline) : undefined,
                     typeof address === "string"
-                        ? eq(this.table.address, address)
+                        ? ilike(this.table.address, `%${address}%`)
                         : address === null
                           ? isNull(this.table.address)
                           : undefined,
@@ -58,8 +58,9 @@ export class LocationsService extends BaseService<typeof locations> {
             })
             .returning();
         if (queryResults.length > 0) {
-            return queryResults[0];
+            return { insertedOrRestored: queryResults[0] };
         }
+        return { insertedOrRestored: null };
     }
 
     async updateOne(id: string, name?: string, isOffline?: boolean, address?: string | null) {

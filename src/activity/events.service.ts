@@ -76,11 +76,11 @@ export class EventsService {
         const locationId =
             location.id ??
             (await this.locationsService.insert(location.data!.name, location.data!.isOffline, location.data!.address))
-                ?.id ??
+                .insertedOrRestored?.id ??
             (await this.locationsService.getIdByName(location.data!.name));
         const eventTypeId =
             eventType.id ??
-            (await this.eventTypesService.insert(eventType.name!))?.id ??
+            (await this.eventTypesService.insert(eventType.name!)).insertedOrRestored?.id ??
             (await this.eventTypesService.getIdByName(eventType.name!));
         if (!moduleId || !locationId || !eventTypeId || !responsiblePersonId) {
             return;

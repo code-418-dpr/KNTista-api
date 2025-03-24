@@ -56,8 +56,9 @@ export class ModulesService extends BaseReferencesService {
             })
             .returning();
         if (queryResults.length > 0) {
-            return queryResults[0];
+            return { insertedOrRestored: queryResults[0] };
         }
+        return { insertedOrRestored: null };
     }
 
     async updateNumbers(ids: string[]) {

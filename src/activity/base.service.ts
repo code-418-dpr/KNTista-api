@@ -16,10 +16,8 @@ import {
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { PgColumn } from "drizzle-orm/pg-core";
 
-import { eventTypes, events, locations, modules, responsiblePersons } from "../drizzle/drizzle.schema";
+import { BaseTable, events } from "../drizzle/drizzle.schema";
 import * as schema from "../drizzle/drizzle.schema";
-
-type BaseTable = typeof eventTypes | typeof modules | typeof responsiblePersons | typeof locations;
 
 export abstract class BaseService<T extends BaseTable> {
     protected static CURRENT_MONTH_EVENT_COUNT_SQL_EXPR = count(sql`CASE
@@ -42,7 +40,9 @@ export abstract class BaseService<T extends BaseTable> {
             .from(this.table as BaseTable)
             .where(eq(this.table.name, name))
             .limit(1);
-        return queryResults[0]?.id;
+        if (queryResults.length > 0) {
+            return queryResults[0].id;
+        }
     }
 
     async findAll(
@@ -87,10 +87,10 @@ export abstract class BaseService<T extends BaseTable> {
                 .update(this.table as BaseTable)
                 .set({ isDeleted: true })
                 .where(eq(this.table.id, id));
-            return { deleted: false, restored: true };
+            return { id, isDeleted: false, isMarkedAsDeleted: true };
         } else {
             const queryResult = await this.db.delete(this.table).where(eq(this.table.id, id));
-            return { deleted: !!queryResult.rowCount, restored: false };
+            return { id, isDeleted: !!queryResult.rowCount, isMarkedAsDeleted: false };
         }
     }
 

@@ -11,7 +11,7 @@ export class ReportsController {
 
     @ApiOperation({ summary: "Search or get all active items" })
     @ApiOkResponse()
-    @ApiInternalServerErrorResponse({ example: BaseController.INTERNAL_SERVER_ERROR_EXAMPLE })
+    @ApiInternalServerErrorResponse({ example: BaseController.SWAGGER_EXAMPLES.internal_server_error })
     @Get(":yearStr/:monthStr")
     @Header("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     @Header("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent("Отчёт.docx")}`)

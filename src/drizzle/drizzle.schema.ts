@@ -88,3 +88,6 @@ export const eventsRelations = relations(events, ({ one }) => ({
         references: [responsiblePersons.id],
     }),
 }));
+
+export type BaseReferenceTable = typeof eventTypes | typeof modules | typeof responsiblePersons;
+export type BaseTable = BaseReferenceTable | typeof locations;
