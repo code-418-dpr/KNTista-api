@@ -48,7 +48,7 @@
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "docxtemplater": "^3.58.2",
-        "drizzle-orm": "^0.40.0",
+        "drizzle-orm": "^0.41.0",
         "joi": "^17.13.3",
         "pg": "^8.14.1",
         "pizzip": "^3.1.7",
