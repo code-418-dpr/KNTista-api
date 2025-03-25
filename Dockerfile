@@ -21,8 +21,11 @@ RUN pnpm build
 
 FROM prod-deps AS release
 COPY .env* .
+COPY src/drizzle/types ./src/drizzle/types
+COPY src/drizzle/drizzle.schema.ts ./src/drizzle/drizzle.schema.ts
+COPY drizzle.config.ts .
 COPY --from=build /app/dist dist
 
 USER node
 EXPOSE 3000
-CMD ["pnpm", "start:prod"]
+CMD ["sh", "-c", "pnpm db:push && pnpm start:prod"]
