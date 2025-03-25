@@ -8,11 +8,11 @@ COPY package.json .
 FROM base AS prod-deps
 COPY pnpm-lock.yaml .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm i -P --frozen-lockfile
+    pnpm i -P --frozen-lockfile --ignore-scripts
 
 FROM prod-deps AS deps
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm i --frozen-lockfile
+    pnpm i --frozen-lockfile --ignore-scripts
 
 FROM deps AS build
 COPY . .
