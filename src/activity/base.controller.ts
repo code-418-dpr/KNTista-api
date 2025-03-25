@@ -26,6 +26,8 @@ export abstract class BaseController<T extends BaseService<BaseTable>> {
             name: "Наименование",
             eventCount: 10,
         },
+        deleteOne: { id: "5451e413-d13a-4175-bf4c-07270f1dc2ee", isDeleted: true, isMarkedAsDeleted: false },
+        deleteUnused: { deletedRowCount: 5 },
     };
 
     protected constructor(protected service: T) {}
@@ -47,7 +49,7 @@ export abstract class BaseController<T extends BaseService<BaseTable>> {
     }
 
     @ApiOperation({ summary: "Delete the item" })
-    @ApiOkResponse()
+    @ApiOkResponse({ example: BaseController.SWAGGER_EXAMPLES.deleteOne })
     @ApiBadRequestResponse({ example: BaseController.SWAGGER_EXAMPLES.validation_error })
     @ApiInternalServerErrorResponse({ example: BaseController.SWAGGER_EXAMPLES.internal_server_error })
     @Delete(":id")
@@ -56,7 +58,7 @@ export abstract class BaseController<T extends BaseService<BaseTable>> {
     }
 
     @ApiOperation({ summary: "Delete all unused items" })
-    @ApiOkResponse()
+    @ApiOkResponse({ example: BaseController.SWAGGER_EXAMPLES.deleteUnused })
     @ApiInternalServerErrorResponse({ example: BaseController.SWAGGER_EXAMPLES.internal_server_error })
     @Delete("unused")
     async deleteUnused() {

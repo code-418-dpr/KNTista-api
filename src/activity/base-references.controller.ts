@@ -17,7 +17,7 @@ export abstract class BaseReferencesController<T extends BaseReferencesService> 
     }
 
     @ApiOperation({ summary: "Add new item" })
-    @ApiCreatedResponse({ example: BaseReferencesController.SWAGGER_EXAMPLES.entity })
+    @ApiCreatedResponse({ example: { insertedOrRestored: BaseReferencesController.SWAGGER_EXAMPLES.entity } })
     @ApiInternalServerErrorResponse({ example: BaseReferencesController.SWAGGER_EXAMPLES.internal_server_error })
     @Post("new")
     async insert(@Body() { name }: NameBodyDto) {
@@ -32,7 +32,7 @@ export abstract class BaseReferencesController<T extends BaseReferencesService> 
     }
 
     @ApiOperation({ summary: "Rename the item" })
-    @ApiOkResponse({ example: BaseReferencesController.SWAGGER_EXAMPLES.entity })
+    @ApiOkResponse({ example: { updated: BaseReferencesController.SWAGGER_EXAMPLES.entity } })
     @ApiBadRequestResponse({ example: BaseReferencesController.SWAGGER_EXAMPLES.validation_error })
     @ApiInternalServerErrorResponse({ example: BaseReferencesController.SWAGGER_EXAMPLES.internal_server_error })
     @Put(":id")

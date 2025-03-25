@@ -63,7 +63,10 @@ export class LocationsService extends BaseService<typeof locations> {
         return { insertedOrRestored: null };
     }
 
-    async updateOne(id: string, name?: string, isOffline?: boolean, address?: string | null) {
+    async updateOne(
+        id: string,
+        { name, isOffline, address }: { name?: string; isOffline?: boolean; address?: string | null },
+    ) {
         const updateValues = {
             ...(name !== undefined && { name }),
             ...(address !== undefined && { address }),
@@ -75,7 +78,8 @@ export class LocationsService extends BaseService<typeof locations> {
             .where(eq(this.table.id, id))
             .returning();
         if (queryResults.length > 0) {
-            return queryResults[0];
+            return { updated: queryResults[0] };
         }
+        return { updated: null };
     }
 }

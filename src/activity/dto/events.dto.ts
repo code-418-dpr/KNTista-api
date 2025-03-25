@@ -18,6 +18,7 @@ export class EventsSearchQueryDto {
     @ApiProperty({ required: false, type: "string", format: "date", example: "2025-01-10" })
     @JoiSchema(
         Joi.string()
+            .allow(null)
             .isoDate()
             .optional()
             .custom((value: string) => new Date(value)),
@@ -50,6 +51,7 @@ export class EventsCreateBodyDto {
     @ApiProperty({ required: false, example: "2025-01-10" })
     @JoiSchema(
         Joi.string()
+            .allow(null)
             .isoDate()
             .optional()
             .custom((value: string) => new Date(value)),
@@ -104,6 +106,91 @@ export class EventsCreateBodyDto {
     @ApiProperty({ example: ["https://habr.com/ru/articles/870470/", "https://vk.com/wall-67577440_6457"] })
     @JoiSchema(Joi.array().items(Joi.string().uri()).min(1).required())
     links: string[];
+}
+
+export class EventsUpdateBodyDto {
+    @ApiProperty({ required: false })
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            name: Joi.string().optional(),
+        })
+            .or("id", "name")
+            .optional(),
+    )
+    module?: IdOrNameDto;
+
+    @ApiProperty({ required: false, example: ["2025-01-01"] })
+    @JoiSchema(
+        Joi.array()
+            .items(Joi.string().isoDate())
+            .min(1)
+            .optional()
+            .custom((values: string[]) => values.map((v) => new Date(v))),
+    )
+    startDates?: Date[];
+
+    @ApiProperty({ required: false, example: "2025-01-10" })
+    @JoiSchema(
+        Joi.string()
+            .allow(null)
+            .isoDate()
+            .optional()
+            .custom((value: string) => new Date(value)),
+    )
+    endDate?: Date;
+
+    @ApiProperty({ required: false })
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            data: Joi.object({
+                name: Joi.string().required(),
+                isOffline: Joi.boolean().required(),
+                address: Joi.string().allow(null).optional(),
+            }).optional(),
+        })
+            .or("id", "data")
+            .optional(),
+    )
+    location?: LocationsSearchOrCreateFromEventDto;
+
+    @ApiProperty({ required: false, example: "Наименование" })
+    @JoiSchema(Joi.string().optional())
+    name?: string;
+
+    @ApiProperty({ required: false })
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            name: Joi.string().optional(),
+        })
+            .or("id", "name")
+            .optional(),
+    )
+    eventType?: IdOrNameDto;
+
+    @ApiProperty({ required: false })
+    @JoiSchema(
+        Joi.object({
+            id: Joi.string().uuid().optional(),
+            name: Joi.string().optional(),
+        })
+            .or("id", "name")
+            .optional(),
+    )
+    responsiblePerson?: IdOrNameDto;
+
+    @ApiProperty({ required: false, example: 10 })
+    @JoiSchema(Joi.number().min(-1).optional())
+    participantsCount?: number;
+
+    @ApiProperty({
+        required: false,
+        example: ["https://habr.com/ru/articles/870470/", "https://vk.com/wall-67577440_6457"],
+    })
+    @JoiSchema(Joi.array().items(Joi.string().uri()).min(1).optional())
+    links?: string[];
 }
 
 export class EventsDeleteBodyDto {

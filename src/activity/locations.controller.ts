@@ -19,7 +19,7 @@ import {
 
 import { BaseController } from "./base.controller";
 import { IdParamDto } from "./dto/base.dto";
-import { LocationsCreateOrUpdateBodyDto, LocationsSearchQueryDto } from "./dto/locations.dto";
+import { LocationsCreateBodyDto, LocationsSearchQueryDto, LocationsUpdateBodyDto } from "./dto/locations.dto";
 import { LocationsService } from "./locations.service";
 
 @Controller("locations")
@@ -62,24 +62,24 @@ export class LocationsController extends BaseController<LocationsService> {
     }
 
     @ApiOperation({ summary: "Add new item" })
-    @ApiCreatedResponse({ example: LocationsController.SWAGGER_EXAMPLES.entity_with_event_count })
+    @ApiCreatedResponse({ example: { insertedOrRestored: LocationsController.SWAGGER_EXAMPLES.entity } })
     @ApiInternalServerErrorResponse({ example: LocationsController.SWAGGER_EXAMPLES.internal_server_error })
     @Post("new")
-    async insert(@Body() { name, isOffline, address }: LocationsCreateOrUpdateBodyDto) {
+    async insert(@Body() { name, isOffline, address }: LocationsCreateBodyDto) {
         return this.service.insert(name, isOffline, address);
     }
 
     @ApiOperation({ summary: "Update the item" })
-    @ApiOkResponse({ example: LocationsController.SWAGGER_EXAMPLES.entity })
+    @ApiOkResponse({ example: { updated: LocationsController.SWAGGER_EXAMPLES.entity } })
     @ApiBadRequestResponse({ example: LocationsController.SWAGGER_EXAMPLES.validation_error })
     @ApiInternalServerErrorResponse({ example: LocationsController.SWAGGER_EXAMPLES.internal_server_error })
     @Put(":id")
-    async updateOne(@Param() { id }: IdParamDto, @Body() body: LocationsCreateOrUpdateBodyDto) {
+    async updateOne(@Param() { id }: IdParamDto, @Body() body: LocationsUpdateBodyDto) {
         try {
-            return await this.service.updateOne(id, body.name, body.isOffline, body.address);
+            return await this.service.updateOne(id, body);
         } catch (e: unknown) {
-            if (typeof e === "object" && e !== null && "code" in e && e.code === "23505") {
-                throw new BadRequestException("Unique key violation during update");
+            if (typeof e === "object" && e !== null && "code" in e && "message" in e && e.code === "23505") {
+                throw new BadRequestException(e.message);
             }
             throw new InternalServerErrorException(e);
         }

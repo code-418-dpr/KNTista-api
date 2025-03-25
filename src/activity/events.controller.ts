@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Post, Query } from "@nestjs/common";
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    InternalServerErrorException,
+    Param,
+    Post,
+    Put,
+    Query,
+} from "@nestjs/common";
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
@@ -8,7 +19,8 @@ import {
 } from "@nestjs/swagger";
 
 import { BaseController } from "./base.controller";
-import { EventsCreateBodyDto, EventsDeleteBodyDto, EventsSearchQueryDto } from "./dto/events.dto";
+import { IdParamDto } from "./dto/base.dto";
+import { EventsCreateBodyDto, EventsDeleteBodyDto, EventsSearchQueryDto, EventsUpdateBodyDto } from "./dto/events.dto";
 import { EventsService } from "./events.service";
 
 @Controller("events")
@@ -40,21 +52,42 @@ export class EventsController {
     }
 
     @ApiOperation({ summary: "Add new item" })
-    @ApiCreatedResponse({ example: EventsController.SWAGGER_EXAMPLES.entity })
+    @ApiCreatedResponse({ example: { insertedOrRestored: EventsController.SWAGGER_EXAMPLES.entity } })
     @ApiInternalServerErrorResponse({ example: EventsController.SWAGGER_EXAMPLES.internal_server_error })
     @Post("new")
     async insert(@Body() body: EventsCreateBodyDto) {
-        return this.service.insert(
-            body.module,
-            body.startDates,
-            body.endDate,
-            body.location,
-            body.name,
-            body.eventType,
-            body.responsiblePerson,
-            body.participantsCount,
-            body.links,
-        );
+        try {
+            return await this.service.insert(body);
+        } catch (e: unknown) {
+            if (typeof e === "object" && e !== null && "message" in e && typeof e.message === "string") {
+                if (e.message === "Some of required fields are undefined") {
+                    throw new BadRequestException(e.message);
+                }
+                throw new InternalServerErrorException(e);
+            }
+            throw new InternalServerErrorException(e);
+        }
+    }
+
+    @ApiOperation({ summary: "Update the item" })
+    @ApiOkResponse({ example: { updated: EventsController.SWAGGER_EXAMPLES.entity } })
+    @ApiBadRequestResponse({ example: EventsController.SWAGGER_EXAMPLES.validation_error })
+    @ApiInternalServerErrorResponse({ example: EventsController.SWAGGER_EXAMPLES.internal_server_error })
+    @Put(":id")
+    async updateOne(@Param() { id }: IdParamDto, @Body() body: EventsUpdateBodyDto) {
+        try {
+            return await this.service.updateOne(id, body);
+        } catch (e: unknown) {
+            if (typeof e === "object" && e !== null && "code" in e && "message" in e) {
+                if (e.code === "23505") {
+                    throw new BadRequestException(e.message);
+                } else if (e.code === "23503") {
+                    throw new BadRequestException(e.message);
+                }
+                throw new InternalServerErrorException(e);
+            }
+            throw new InternalServerErrorException(e);
+        }
     }
 
     @ApiOperation({ summary: "Delete the items by ids" })
