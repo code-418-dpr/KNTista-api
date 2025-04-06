@@ -1,5 +1,6 @@
 import { includeIgnoreFile } from "@eslint/compat";
 import eslint from "@eslint/js";
+import eslintPrettierConfig from "eslint-config-prettier";
 import path from "path";
 import tseslint from "typescript-eslint";
 
@@ -7,6 +8,7 @@ const gitignorePath = path.resolve(import.meta.dirname, ".gitignore");
 
 export default tseslint.config(
     includeIgnoreFile(gitignorePath),
+    eslintPrettierConfig,
 
     {
         files: ["**/*.js"],
